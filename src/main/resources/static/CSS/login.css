@@ -1,0 +1,101 @@
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f4f7fc;
+}
+
+.login-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.login-image {
+    flex: 1;
+    background: url('https://static.vecteezy.com/system/resources/previews/016/839/722/large_2x/2-step-authentication-illustration-concept-secure-login-verification-password-or-sms-with-push-code-message-on-smartphone-or-desktop-pc-computer-for-sites-landing-pages-apps-posters-and-banners-vector.jpg') no-repeat center center;
+    background-size: contain;
+    background-color: #f4f7fc;
+}
+
+.login-form {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
+.login-form-inner {
+    width: 100%;
+    max-width: 400px;
+}
+
+.login-form h1 {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.login-form p {
+    color: #888;
+    margin-bottom: 30px;
+}
+
+.form-control {
+    height: 50px;
+    border-radius: 10px;
+    border: 1px solid #e0e0e0;
+    padding: 0 20px;
+    font-size: 0.9rem;
+}
+
+.form-control:focus {
+    box-shadow: none;
+    border-color: #4a47a3;
+}
+
+.btn-primary {
+    background-color: #4a47a3;
+    border-color: #4a47a3;
+    height: 50px;
+    border-radius: 10px;
+    font-weight: 600;
+}
+
+.btn-primary:hover {
+    background-color: #3a3783;
+    border-color: #3a3783;
+}
+
+.social-login {
+    margin-top: 30px;
+    text-align: center;
+}
+
+.social-login p {
+    color: #888;
+    margin-bottom: 20px;
+}
+
+.social-icons {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+}
+
+.social-icon {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #555;
+    text-decoration: none;
+    transition: all 0.3s ease-in-out;
+}
+
+.social-icon:hover {
+    background-color: #f4f7fc;
+    border-color: #4a47a3;
+    color: #4a47a3;
+}
