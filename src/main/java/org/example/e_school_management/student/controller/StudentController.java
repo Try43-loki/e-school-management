@@ -11,6 +11,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.example.e_school_management.student.repository.StudentRepository;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+
 @Controller
 @RequestMapping("/student")
 public class StudentController {
@@ -18,9 +22,17 @@ public class StudentController {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private StudentRepository studentRepository;
+
 
     @GetMapping("/dashboard")
-    public String dashboard(Model model) {
+    public String dashboard(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            model.addAttribute("student", studentRepository.findByUsername(username));
+        }
+
         model.addAttribute("posts", postService.findAll());
         model.addAttribute("totalCourses", 5); // Placeholder
         model.addAttribute("topSemester", "Semester 3"); // Placeholder
@@ -37,6 +49,16 @@ public class StudentController {
         model.addAttribute("assignments", assignments);
 
         return "student/dashboard";
+    }
+
+    @GetMapping("/profile")
+    public String profile(Model model, @AuthenticationPrincipal UserDetails userDetails) {
+        if (userDetails != null) {
+            String username = userDetails.getUsername();
+            model.addAttribute("student", studentRepository.findByUsername(username));
+        }
+        model.addAttribute("currentPage", "profile");
+        return "student/profile";
     }
 
     @GetMapping("/announcements")

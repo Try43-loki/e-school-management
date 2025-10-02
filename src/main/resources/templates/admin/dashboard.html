@@ -60,7 +60,7 @@
                 <canvas id="performanceChart"></canvas>
             </div>
             <div class="gender-container">
-                <h5>Student Gender</h5>
+                <h5>Total Student</h5>
                 <canvas id="genderChart"></canvas>
             </div>
         </div>
@@ -91,34 +91,25 @@
     <div class="right-sidebar">
         <div class="calendar-widget">
             <div class="calendar-header">
-                <span>September 2025</span>
+                <span id="month-year"></span>
                 <div>
-                    <span>&lt;</span>
-                    <span>&gt;</span>
+                    <span id="prev-month">&lt;</span>
+                    <span id="next-month">&gt;</span>
                 </div>
             </div>
-            <div class="calendar-grid">
-                <div class="day-name">Su</div>
-                <div class="day-name">Mo</div>
-                <div class="day-name">Tu</div>
-                <div class="day-name">We</div>
-                <div class="day-name">Th</div>
-                <div class="day-name">Fr</div>
-                <div class="day-name">Sa</div>
-                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
-                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div class="today">21</div>
-                <div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div>
-                <div>29</div><div>30</div>
+            <div class="calendar-grid" id="calendar-grid">
             </div>
         </div>
 
         <div class="news-feed">
             <h3>Recently Posted</h3>
             <div th:each="post : ${latestPosts}" class="news-item">
-                <div class="icon"></div>
-                <p th:text="${post.title}">New student, John Doe, has been registered.<span>1 hour ago</span></p>
-                <p><small class="text-muted" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small></p>
+                <div>
+                    <p>
+                        <span th:text="${post.title}"></span>
+                    </p>
+                    <p><small class="text-muted" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small></p>
+                </div>
             </div>
         </div>
     </div>
@@ -133,7 +124,7 @@
     new Chart(perfCtx, {
         type: 'bar',
         data: {
-            labels: ['Grade A', 'Grade B', 'Grade C', 'Grade D', 'Grade E'],
+            labels: ['Semester 1', 'Semester 2', 'Semester 3', 'Semester 4', 'Semester 5'],
             datasets: [{
                 label: 'Number of Students',
                 data: [65, 59, 80, 81, 56], // Placeholder data
@@ -171,6 +162,67 @@
                 borderWidth: 1
             }]
         }
+    });
+
+    // Calendar script
+    document.addEventListener('DOMContentLoaded', function () {
+        const monthYearElement = document.getElementById('month-year');
+        const calendarGrid = document.getElementById('calendar-grid');
+        const today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        function generateCalendar(month, year) {
+            calendarGrid.innerHTML = '';
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            monthYearElement.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            dayNames.forEach(day => {
+                const dayNameCell = document.createElement('div');
+                dayNameCell.classList.add('day-name');
+                dayNameCell.textContent = day;
+                calendarGrid.appendChild(dayNameCell);
+            });
+
+            for (let i = 0; i < startingDay; i++) {
+                const emptyCell = document.createElement('div');
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.textContent = day;
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayCell.classList.add('today');
+                }
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        generateCalendar(currentMonth, currentYear);
+
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
     });
 </script>
 

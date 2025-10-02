@@ -29,7 +29,7 @@ public class FileStorageService {
         }
     }
 
-    public String storeFile(MultipartFile file) {
+    public java.util.Map<String, String> storeFile(MultipartFile file) {
         String originalFileName = StringUtils.cleanPath(file.getOriginalFilename());
         String fileExtension = "";
         try {
@@ -47,9 +47,13 @@ public class FileStorageService {
             Path targetLocation = this.fileStorageLocation.resolve(fileName);
             Files.copy(file.getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
 
-            return fileName;
+            java.util.Map<String, String> fileNames = new java.util.HashMap<>();
+            fileNames.put("fileName", fileName);
+            fileNames.put("originalFileName", originalFileName);
+
+            return fileNames;
         } catch (IOException ex) {
-            throw new RuntimeException("Could not store file " + fileName + ". Please try again!", ex);
+            throw new RuntimeException("Could not store file " + originalFileName + ". Please try again!", ex);
         }
     }
 

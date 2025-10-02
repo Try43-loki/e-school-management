@@ -48,7 +48,7 @@
                     <td th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></td>
                     <td>
                         <div th:if="${post.fileName}">
-                            <a th:href="@{${post.filePath}}" target="_blank" th:text="${post.fileName}"></a>
+                            <a th:href="@{${post.filePath}}" target="_blank" th:text="${post.originalFileName}"></a>
                         </div>
                         <div th:unless="${post.fileName}">
                             No attachment

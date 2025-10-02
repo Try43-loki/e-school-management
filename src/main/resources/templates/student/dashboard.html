@@ -24,6 +24,12 @@
             </a>
         </li>
         <li>
+            <a th:href="@{/student/profile}"
+               th:classappend="${currentPage == 'profile'} ? 'active' : ''">
+                Profile
+            </a>
+        </li>
+        <li>
             <form th:action="@{/logout}" method="post" style="display: inline;">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
                 <button type="submit" class="btn btn-link nav-link" style="color: #555; padding: 15px 20px; text-decoration: none; border-radius: 8px; margin-bottom: 10px; transition: background-color 0.3s, color 0.3s;">Logout</button>
@@ -35,6 +41,8 @@
 <div class="main-content">
     <div class="content-primary">
         <h1>Student Dashboard</h1>
+
+
 
         <div class="stat-cards">
             <div class="card">
@@ -96,25 +104,13 @@
     <div class="right-sidebar">
         <div class="calendar-widget">
             <div class="calendar-header">
-                <span>September 2025</span>
+                <span id="month-year"></span>
                 <div>
-                    <span>&lt;</span>
-                    <span>&gt;</span>
+                    <span id="prev-month">&lt;</span>
+                    <span id="next-month">&gt;</span>
                 </div>
             </div>
-            <div class="calendar-grid">
-                <div class="day-name">Su</div>
-                <div class="day-name">Mo</div>
-                <div class="day-name">Tu</div>
-                <div class="day-name">We</div>
-                <div class="day-name">Th</div>
-                <div class="day-name">Fr</div>
-                <div class="day-name">Sa</div>
-                <div>1</div><div>2</div><div>3</div><div>4</div><div>5</div><div>6</div><div>7</div>
-                <div>8</div><div>9</div><div>10</div><div>11</div><div>12</div><div>13</div><div>14</div>
-                <div>15</div><div>16</div><div>17</div><div>18</div><div>19</div><div>20</div><div class="today">21</div>
-                <div>22</div><div>23</div><div>24</div><div>25</div><div>26</div><div>27</div><div>28</div>
-                <div>29</div><div>30</div>
+            <div class="calendar-grid" id="calendar-grid">
             </div>
         </div>
 
@@ -125,7 +121,6 @@
                     <p>No posts available at the moment.</p>
                 </div>
                 <div th:each="post : ${posts}" class="news-item">
-                    <div class="icon"></div>
                     <div>
                         <p th:text="${post.title}"></p>
                         <small class="text-muted" th:text="${#temporals.format(post.createdAt, 'yyyy-MM-dd HH:mm')}"></small>
@@ -189,6 +184,67 @@
                 borderWidth: 1
             }]
         }
+    });
+
+    // Calendar script
+    document.addEventListener('DOMContentLoaded', function () {
+        const monthYearElement = document.getElementById('month-year');
+        const calendarGrid = document.getElementById('calendar-grid');
+        const today = new Date();
+        let currentMonth = today.getMonth();
+        let currentYear = today.getFullYear();
+
+        function generateCalendar(month, year) {
+            calendarGrid.innerHTML = '';
+            const firstDay = new Date(year, month, 1);
+            const lastDay = new Date(year, month + 1, 0);
+            const daysInMonth = lastDay.getDate();
+            const startingDay = firstDay.getDay();
+
+            monthYearElement.textContent = new Date(year, month).toLocaleString('default', { month: 'long', year: 'numeric' });
+
+            const dayNames = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+            dayNames.forEach(day => {
+                const dayNameCell = document.createElement('div');
+                dayNameCell.classList.add('day-name');
+                dayNameCell.textContent = day;
+                calendarGrid.appendChild(dayNameCell);
+            });
+
+            for (let i = 0; i < startingDay; i++) {
+                const emptyCell = document.createElement('div');
+                calendarGrid.appendChild(emptyCell);
+            }
+
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dayCell = document.createElement('div');
+                dayCell.textContent = day;
+                if (day === today.getDate() && month === today.getMonth() && year === today.getFullYear()) {
+                    dayCell.classList.add('today');
+                }
+                calendarGrid.appendChild(dayCell);
+            }
+        }
+
+        generateCalendar(currentMonth, currentYear);
+
+        document.getElementById('prev-month').addEventListener('click', () => {
+            currentMonth--;
+            if (currentMonth < 0) {
+                currentMonth = 11;
+                currentYear--;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
+
+        document.getElementById('next-month').addEventListener('click', () => {
+            currentMonth++;
+            if (currentMonth > 11) {
+                currentMonth = 0;
+                currentYear++;
+            }
+            generateCalendar(currentMonth, currentYear);
+        });
     });
 </script>
 

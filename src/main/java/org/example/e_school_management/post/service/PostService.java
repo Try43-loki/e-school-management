@@ -39,9 +39,28 @@ public class PostService {
 
     public Post save(Post post, MultipartFile file) {
         if (file != null && !file.isEmpty()) {
-            String fileName = fileStorageService.storeFile(file);
-            post.setFileName(fileName);
-            post.setFilePath("/uploads/" + fileName);
+            // If there's an existing file, delete it
+            if (post.getId() != null) {
+                postRepository.findById(post.getId()).ifPresent(existingPost -> {
+                    if (existingPost.getFileName() != null) {
+                        fileStorageService.deleteFile(existingPost.getFileName());
+                    }
+                });
+            }
+
+            java.util.Map<String, String> fileNames = fileStorageService.storeFile(file);
+            post.setFileName(fileNames.get("fileName"));
+            post.setOriginalFileName(fileNames.get("originalFileName"));
+            post.setFilePath("/uploads/" + fileNames.get("fileName"));
+        } else {
+            // If no new file is uploaded, retain the existing file info
+            if (post.getId() != null) {
+                postRepository.findById(post.getId()).ifPresent(existingPost -> {
+                    post.setFileName(existingPost.getFileName());
+                    post.setOriginalFileName(existingPost.getOriginalFileName());
+                    post.setFilePath(existingPost.getFilePath());
+                });
+            }
         }
         return postRepository.save(post);
     }

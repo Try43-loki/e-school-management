@@ -27,6 +27,8 @@ public class Post {
 
     private String fileName;
 
+    private String originalFileName;
+
     private String filePath;
 
     private LocalDateTime createdAt;
